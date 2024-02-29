@@ -6,6 +6,7 @@ export default function users(router, db) {
 
     const app = router()
     app.post("/", verifyToken, (req, res) => usersController.createUser(req, res))
-
+    app.get("/", verifyToken, (req, res) => usersController.getAllUsers(req, res))
+    
     return app
 }

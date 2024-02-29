@@ -20,4 +20,13 @@ export default class UserController {
             return err
         }
     }
+
+    async getAllUsers() {
+        try {
+            return await this.database("users").select(["id", "name","username","active","root","created_at"])
+        } catch (err) {
+            console.log("Error on get all user => ", err)
+            return err
+        }
+    }
 }

@@ -13,6 +13,9 @@ export default class Users {
                 password: await bcrypt.hash(obj.password, 10)
             }
             const result = await this.usersModel.createUser(data)
+            if(result.code === '23505')
+            return { code: 400, status: "error", message: "User already exist " }
+
             if (!result?.[0]?.id)
                 return { code: 500, status: "error", message: "Error on create " }
 
@@ -38,4 +41,16 @@ export default class Users {
             return { code: 500, status: "error", message: err.message }
         }
     }
+
+    async allUsers() {
+        try {
+            const result = await this.usersModel.getAllUsers()
+
+            return { code: 200, status: "success", data: result }
+        } catch (err) {
+            console.log("Error on get all user => ", err)
+            return { code: 500, status: "error", message: err.message }
+        }
+    }
+
 }

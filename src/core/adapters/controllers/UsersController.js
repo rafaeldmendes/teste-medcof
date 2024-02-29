@@ -5,6 +5,17 @@ export default class UsersController {
         this.users = new Users(database)
     }
 
+    async getAllUsers(req, res) {
+
+        const user = await this.users.getUser(req.userId)
+        if (user.code != 200) {
+            return res.status(user.code).send(user)
+        }
+
+        const result = await this.users.allUsers()
+        return res.status(result.code).send(result)
+    }
+
     async createUser(req, res) {
 
         const user = await this.users.getUser(req.userId)

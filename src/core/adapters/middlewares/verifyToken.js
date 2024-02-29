@@ -25,6 +25,7 @@ function accessPolicy(url, method) {
     const policies = {
         "GET:/health": { root: false },
         "POST:/users": { root: true },
+        "GET:/users": { root: true },
     }
 
     return policies[`${method}:${url}`]
