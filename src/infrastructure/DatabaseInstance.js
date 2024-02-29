@@ -12,7 +12,6 @@ if (process.env.DEPLOY === "true") {
     }).catch((err) => {
         console.log("Database seed failed", err);
     })
-
 }
 
 const connection = knex(knexfile[process.env.STATE_ENV]);

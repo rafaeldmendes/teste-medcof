@@ -13,13 +13,11 @@ export default class Auth {
             }
 
             const user = await this.authModel.getUser(username)
-    console.log(user)
             if (!user?.length) {
-                return { code: 403, status: "error", message: "User not found" }
+                return { code: 404, status: "error", message: "User not found" }
             }
             
             const passwordMatch = await bcrypt.compare(password,  user[0].password);
-            console.log(passwordMatch, user[0].password, password)
             if (!passwordMatch) {
                 return { code: 400, status: "error", message: "Password is wrong" }
             }
@@ -27,7 +25,7 @@ export default class Auth {
             return { code: 200, status: "success", data: token }
         } catch (err) {
             console.log(err)
-            return { code: 400, status: "error", message: err.message }
+            return { code: 500, status: "error", message: err.message }
         }
     }
 }

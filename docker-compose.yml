@@ -1,34 +1,61 @@
 version: '3.8'
 services:
-  app:
-    build: .
-    ports:
-      - '3000:3000'
-    volumes:
-      - .:/usr/src/app
-    environment:
-      - PORT=3000
-      - STATE_ENV=development
-      - DB_NAME=teste
-      - DB_USER=postgres
-      - DB_PASSWORD=root
-      - DB_PORT=5432
-      - DB_HOST=host.docker.internal
-      - JWT_SECRET=secret
-      - DEPLOY=true # SE FOR FAZER A PRIMEIRA RUN, COLOCAR true
-      - ROOT_USER=root
-      - ROOT_PASSWORD=root 
-
-      ## SE NÃO TIVER O POSTGRES INSTALADO, DESCOMENTAR AS PROXIMAS LINHAS
-    depends_on:
-      - db
-    links:
-      - db
   db:
     image: postgres
+    restart: always
+    container_name: postgres
     environment:
-      POSTGRES_DB: teste
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root    
     ports:
       - '5432:5432'
+    expose:
+      - '5432'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+
+    # cache:
+    # image: redis
+    # restart: always
+    # container_name: redis
+    # networks:  
+    #   - callcenter    
+    # ports:
+    #   - '6379:6379'
+    # expose:
+    #   - '6379'
+    # healthcheck:
+    #   test: ["CMD", "redis-cli", "ping"]
+    #   interval: 1s
+    #   timeout: 3s
+    #   retries: 30
+
+
+  app:
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db
+    image: app
+    container_name: app
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./.env
+    # command: >
+    #   bash -c "cp .env.local .env &&
+    #          sequelize db:migrate --env production &&
+    #          rm -rf .env &&
+    #          pm2-runtime index.js --name callcenter --log-date-format='DD-MM-YYYY HH:mm Z'"
+  

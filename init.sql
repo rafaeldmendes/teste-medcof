@@ -1,0 +1,2 @@
+CREATE DATABASE teste;
+-- CREATE DATABASE msbot;
