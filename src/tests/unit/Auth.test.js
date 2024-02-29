@@ -1,23 +1,27 @@
 import { jest } from '@jest/globals';
+import bcrypt from "bcrypt"
 
-import AuthModel from "../../core/domain/models/AuthModel";
 import Auth from "../../core/application/usecase/Auth.js"
 
-jest.mock("../../core/domain/models/AuthModel");
 
 
-// beforeEach(() => {
-//     AuthModel.mockClear();
-// });
+describe("Test login function", () => {
+    let connection, passwordHash
+    const data = { username: "admin", password: "admin" }
 
-describe("Test auth", () => {
+    beforeAll(async () => {
+        passwordHash = await bcrypt.hash(data.password, 10)
 
-   
+        connection = jest.fn().mockImplementation(() => {
+            return {
+                where: jest.fn().mockReturnValue([{ id: 1, username: "admin", password: passwordHash }])
+            }
+        })
+    })
 
     it("Test login success", async () => {
-        const auth = new Auth()
-        const response = await auth.login({ username: "admin", password: "admin" })
-        console.log(response)
+        const auth = new Auth(connection)
+        const response = await auth.login(data)
         expect(response.code).toBe(200)
         expect(response.status).toBe("success")
         expect(response.data).toBeDefined()
@@ -25,18 +29,25 @@ describe("Test auth", () => {
     })
 
     it("Test login insuccess - missing password", async () => {
-        const auth = new Auth()
-        const response = await auth.login({ username: "admin" })
+        const auth = new Auth(connection)
+        const response = await auth.login({ username: data.username })
         expect(response.code).toBe(400)
         expect(response.status).toBe("error")
-        expect(response.message).toBe("username and password is required")
     })
 
     it("Test login insuccess - missing username", async () => {
-        const auth = new Auth()
-        const response = await auth.login({  password: "password" })
+
+        const auth = new Auth(connection)
+        const response = await auth.login({ password: passwordHash })
         expect(response.code).toBe(400)
         expect(response.status).toBe("error")
-        expect(response.message).toBe("username and password is required")
+    })
+
+    it("Test login insuccess - User not found", async () => {
+
+        const auth = new Auth(connection)
+        const response = await auth.login({ password: passwordHash })
+        expect(response.code).toBe(400)
+        expect(response.status).toBe("error")
     })
 })

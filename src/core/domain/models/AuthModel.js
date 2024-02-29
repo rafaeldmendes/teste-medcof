@@ -1,5 +1,8 @@
 export default class AuthModel {
-    async getUser(username){
-        return {  token: "token" }
+    constructor(database) {
+        this.database = database
+    }
+    async getUser(username) {
+        return await this.database("users").where({username}) 
     }
 }

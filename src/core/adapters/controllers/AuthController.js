@@ -1,12 +1,17 @@
-import Auth from '../../usecases/Auth'
+import Auth from '../../application/usecase/Auth.js'
 
 export default class AuthController {
-    constructor() {
-        this.auth = new Auth()
+    constructor(database = {}) {
+        this.auth = new Auth(database)
+
     }
     async login(req, res) {
-        
+
+        if (!req.body) {
+            return res.status(400).send({ code: 400, status: "error", message: "username and password is required" })
+        }
+
         const result = await this.auth.login(req.body)
-        return res.code(result.code).send(result)
+        return res.status(result.code).send(result)
     }
 }

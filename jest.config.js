@@ -2,7 +2,6 @@
 
 export default {
   verbose: true,
-clearMocks: true,
+  clearMocks: true,
   transform: {}
-
 };

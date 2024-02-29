@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - PORT=3000
+      - STATE_ENV=development
+      - DB_NAME=teste
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+      - DB_PORT=5432
+      - DB_HOST=host.docker.internal
+      - JWT_SECRET=secret
+      - DEPLOY=true # SE FOR FAZER A PRIMEIRA RUN, COLOCAR true
+      - ROOT_USER=root
+      - ROOT_PASSWORD=root 
+
+      ## SE NÃO TIVER O POSTGRES INSTALADO, DESCOMENTAR AS PROXIMAS LINHAS
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: teste
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - '5432:5432'

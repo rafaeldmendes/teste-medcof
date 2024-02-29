@@ -7,17 +7,21 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "dev": "nodemon index.js --env-file=.env",
     "migrate:up": " ./node_modules/.bin/knex migrate:up",
-    "seed:run":"./node_modules/.bin/knex seed:run"
+    "seed:run": "./node_modules/.bin/knex seed:run"
   },
   "type": "module",
   "author": "Rafael da Silva Mendes",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "supertest": "^6.3.4"
   },
   "devDependencies": {
     "jest": "^29.7.0",

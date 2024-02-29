@@ -1,6 +1,8 @@
-export function health(router, db){
+import verifyToken from "../middlewares/verifyToken.js"
+
+export default function health(router, db) {
     const app = router()
-    app.get("/health", (req,res) => res.json({status:"ok"}))
+    app.get("/health",  verifyToken, (req, res) => res.json({ status: "ok" }))
 
     return app
 }
