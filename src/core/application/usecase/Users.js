@@ -10,7 +10,9 @@ export default class Users {
             const data = {
                 name: obj.name,
                 username: obj.username,
-                password: await bcrypt.hash(obj.password, 10)
+                password: await bcrypt.hash(obj.password, 10),
+                created_at: new Date(),
+                updated_at: new Date()
             }
             const result = await this.usersModel.createUser(data)
             if(result.code === '23505')
